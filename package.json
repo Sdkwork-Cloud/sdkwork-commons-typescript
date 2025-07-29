@@ -1,0 +1,26 @@
+{
+  "name": "sdkwork-commons-typescript",
+  "version": "1.0.0",
+  "description": "Common TypeScript library for SDK work",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "sdk",
+    "typescript",
+    "common"
+  ],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/axios": "^0.14.4",
+    "@types/node": "^18.0.0",
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "axios": "^1.11.0"
+  }
+}
