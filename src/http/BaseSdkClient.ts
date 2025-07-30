@@ -147,4 +147,7 @@ export class BaseSdkClient {
     
     return baseUrl + normalizedPath;
   }
+  getBasePath() {
+    return this.options.baseUrl;
+  }
 }

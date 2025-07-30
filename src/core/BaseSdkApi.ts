@@ -6,4 +6,7 @@ export abstract class BaseSdkApi {
   constructor(client: BaseSdkClient) {
     this._client = client;
   }
+  protected getBasePath() {
+    return this._client.getBasePath();
+  }
 }

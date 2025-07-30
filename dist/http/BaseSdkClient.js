@@ -108,5 +108,8 @@ class BaseSdkClient {
         const normalizedPath = path.startsWith('/') ? path : '/' + path;
         return baseUrl + normalizedPath;
     }
+    getBasePath() {
+        return this.options.baseUrl;
+    }
 }
 exports.BaseSdkClient = BaseSdkClient;
