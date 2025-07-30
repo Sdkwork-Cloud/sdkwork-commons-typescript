@@ -1,4 +1,9 @@
-export type HTTPMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
+export type HTTPMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
+export type ServerSentEvent = {
+    event: string | null;
+    data: string;
+    raw: string[];
+};
 export interface SdkClientOptions {
     baseUrl: string;
     apiKey?: string;
@@ -20,7 +25,7 @@ export interface SdkResponse<T> {
     headers: Record<string, string>;
 }
 export type RequestOptions = Partial<FinalRequestOptions>;
-export interface FinalRequestOptions extends Omit<SdkRequestOptions, 'method'> {
+export interface FinalRequestOptions extends Omit<SdkRequestOptions, "method"> {
     method: HTTPMethod;
     path: string;
 }
@@ -35,5 +40,20 @@ export declare class APIPromise<T> implements Promise<SdkResponse<T>> {
     finally(onfinally?: (() => void) | undefined | null): Promise<SdkResponse<T>>;
     [Symbol.toStringTag]: string;
     asResponse(): Promise<SdkResponse<T>>;
+}
+export declare function ReadableStreamToAsyncIterable<T>(stream: any): AsyncIterableIterator<T>;
+export declare function _iterSSEMessages(response: Response, controller: AbortController): AsyncGenerator<ServerSentEvent, void, unknown>;
+export declare class SdkStream<Item> implements AsyncIterable<Item> {
+    private iterator;
+    controller: AbortController;
+    _client: BaseSdkClientType | undefined;
+    constructor(iterator: () => AsyncIterator<Item>, controller: AbortController, client?: BaseSdkClientType);
+    [Symbol.asyncIterator](): AsyncIterator<Item, any, undefined>;
+    static fromSSEResponse<Item>(response: Response, controller: AbortController, client?: BaseSdkClientType): SdkStream<Item>;
+    /**
+     * Generates a Stream from a newline-separated ReadableStream
+     * where each item is a JSON value.
+     */
+    static fromReadableStream<Item>(readableStream: ReadableStream, controller: AbortController, client?: BaseSdkClientType): SdkStream<Item>;
 }
 export {};
