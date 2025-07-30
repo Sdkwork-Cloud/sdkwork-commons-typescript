@@ -5,8 +5,8 @@ class BaseSdkApi {
     constructor(client) {
         this._client = client;
     }
-    getBasePath() {
-        return this._client.getBasePath();
+    getBasePath(options) {
+        return this._client.getBasePath(options);
     }
 }
 exports.BaseSdkApi = BaseSdkApi;

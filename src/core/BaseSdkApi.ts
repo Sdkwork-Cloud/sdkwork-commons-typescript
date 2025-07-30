@@ -1,4 +1,5 @@
 import { BaseSdkClient } from '../http';
+import { SdkRequestOptions } from '../types';
 
 export abstract class BaseSdkApi {
   protected _client: BaseSdkClient;
@@ -6,7 +7,7 @@ export abstract class BaseSdkApi {
   constructor(client: BaseSdkClient) {
     this._client = client;
   }
-  protected getBasePath() {
-    return this._client.getBasePath();
+  protected getBasePath(options?: SdkRequestOptions) {
+    return this._client.getBasePath(options);
   }
 }

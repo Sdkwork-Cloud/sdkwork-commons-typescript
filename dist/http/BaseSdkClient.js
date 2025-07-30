@@ -108,7 +108,7 @@ class BaseSdkClient {
         const normalizedPath = path.startsWith('/') ? path : '/' + path;
         return baseUrl + normalizedPath;
     }
-    getBasePath() {
+    getBasePath(requestOptions) {
         return this.options.baseUrl;
     }
 }
