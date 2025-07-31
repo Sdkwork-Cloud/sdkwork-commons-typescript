@@ -56,4 +56,80 @@ export declare class SdkStream<Item> implements AsyncIterable<Item> {
      */
     static fromReadableStream<Item>(readableStream: ReadableStream, controller: AbortController, client?: BaseSdkClientType): SdkStream<Item>;
 }
+/**
+ * 自动生成的TypeScript接口定义
+ * 对应Java类: ApiResult
+ */
+export interface ApiResult<T> {
+    /**
+     * data字段
+     * Java类型: java.lang.Object
+     */
+    data: T;
+    /**
+     * code字段
+     * Java类型: java.lang.String
+     */
+    code: string;
+    /**
+     * msg字段
+     * Java类型: java.lang.String
+     */
+    msg: string;
+    /**
+     * requestId字段
+     * Java类型: java.lang.String
+     */
+    requestId: string;
+    /**
+     * ip字段
+     * Java类型: java.lang.String
+     */
+    ip: string;
+    /**
+     * hostname字段
+     * Java类型: java.lang.String
+     */
+    hostname: string;
+    /**
+     * errorMsg字段
+     * Java类型: java.lang.String
+     */
+    errorMsg: string;
+    /**
+     * errorName字段
+     * Java类型: java.lang.String
+     */
+    errorName: string;
+    /**
+     * channelErrorCode字段
+     * Java类型: java.lang.String
+     */
+    channelErrorCode: string;
+    /**
+     * channelErrorMsg字段
+     * Java类型: java.lang.String
+     */
+    channelErrorMsg: string;
+    /**
+     * sign字段
+     * Java类型: java.lang.String
+     */
+    sign: string;
+    /**
+     * signType字段
+     * Java类型: java.lang.String
+     */
+    signType: string;
+    /**
+     * encryptType字段
+     * Java类型: java.lang.String
+     */
+    encryptType: string;
+    /**
+     * encryptedText字段
+     * Java类型: java.lang.String
+     */
+    encryptedText: string;
+}
 export {};
