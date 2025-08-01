@@ -9,11 +9,19 @@ export type ServerSentEvent = {
   data: string;
   raw: string[];
 };
+export interface TokenManager{
+  getAuthToken(): string | null;
+  getRefreshToken(): string | null;
+  getAccessToken(): string | null;
+}
 export interface SdkClientOptions {
   baseUrl: string;
   apiKey?: string;
+  accessToken?: string;
+  tokenManager?: TokenManager;
   timeout?: number;
   headers?: Record<string, string>;
+
 }
 
 export interface SdkRequestOptions {

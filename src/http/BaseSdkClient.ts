@@ -1,8 +1,13 @@
-import { SdkClientOptions } from '../types';
-import { SdkRequestOptions } from '../types';
-import { SdkResponse } from '../types';
-import { HttpTool } from './HttpTool';
-import { HTTPMethod, FinalRequestOptions, PromiseOrValue, APIPromise } from '../types';
+import { SdkClientOptions } from "../types";
+import { SdkRequestOptions } from "../types";
+import { SdkResponse } from "../types";
+import { HttpTool } from "./HttpTool";
+import {
+  HTTPMethod,
+  FinalRequestOptions,
+  PromiseOrValue,
+  APIPromise,
+} from "../types";
 
 export class BaseSdkClient {
   private options: SdkClientOptions;
@@ -12,9 +17,28 @@ export class BaseSdkClient {
   }
 
   /**
-   * Used as a callback for mutating the given `FinalRequestOptions` object.
+   * Used as a callback for mutating the given `SdkRequestOptions` object.
    */
-  protected async prepareOptions(options: FinalRequestOptions): Promise<void> {}
+  protected async prepareOptions(
+    requestOptions: SdkRequestOptions
+  ): Promise<void> {
+    if (!requestOptions?.headers) {
+      requestOptions.headers = {};
+    }
+    if (this.options.apiKey) {
+      requestOptions.headers["Authorization"] = `Bearer ${this.options.apiKey}`;
+    }
+    const tokenManager = this.options.tokenManager;
+    const accessToken =
+      this.options.accessToken || tokenManager?.getAccessToken();
+    if (accessToken) {
+      requestOptions.headers["Access-Token"] = `${accessToken}`;
+    }
+    const authToken = tokenManager?.getAuthToken();
+    if (authToken) {
+      requestOptions.headers["Authorization"] = `Bearer ${authToken}`;
+    }
+  }
 
   /**
    * Used as a callback for mutating the given `RequestInit` object.
@@ -22,38 +46,51 @@ export class BaseSdkClient {
    * This is useful for cases where you want to add certain headers based off of
    * the request properties, e.g. `method` or `url`.
    */
-  protected async prepareRequest(
-    request: RequestInit,
-    { url, options }: { url: string; options: FinalRequestOptions },
-  ): Promise<void> {}
+  protected async prepareRequest(options: FinalRequestOptions): Promise<void> {}
 
-  get<Rsp>(path: string, opts?: PromiseOrValue<SdkRequestOptions>): APIPromise<Rsp> {
-    return this.methodRequest('GET', path, opts);
+  get<Rsp>(
+    path: string,
+    opts?: PromiseOrValue<SdkRequestOptions>
+  ): APIPromise<Rsp> {
+    return this.methodRequest("GET", path, opts);
   }
 
-  post<Rsp>(path: string, opts?: PromiseOrValue<SdkRequestOptions>): APIPromise<Rsp> {
-    return this.methodRequest('POST', path, opts);
+  post<Rsp>(
+    path: string,
+    opts?: PromiseOrValue<SdkRequestOptions>
+  ): APIPromise<Rsp> {
+    return this.methodRequest("POST", path, opts);
   }
 
-  patch<Rsp>(path: string, opts?: PromiseOrValue<SdkRequestOptions>): APIPromise<Rsp> {
-    return this.methodRequest('PATCH', path, opts);
+  patch<Rsp>(
+    path: string,
+    opts?: PromiseOrValue<SdkRequestOptions>
+  ): APIPromise<Rsp> {
+    return this.methodRequest("PATCH", path, opts);
   }
 
-  put<Rsp>(path: string, opts?: PromiseOrValue<SdkRequestOptions>): APIPromise<Rsp> {
-    return this.methodRequest('PUT', path, opts);
+  put<Rsp>(
+    path: string,
+    opts?: PromiseOrValue<SdkRequestOptions>
+  ): APIPromise<Rsp> {
+    return this.methodRequest("PUT", path, opts);
   }
 
-  delete<Rsp>(path: string, opts?: PromiseOrValue<SdkRequestOptions>): APIPromise<Rsp> {
-    return this.methodRequest('DELETE', path, opts);
+  delete<Rsp>(
+    path: string,
+    opts?: PromiseOrValue<SdkRequestOptions>
+  ): APIPromise<Rsp> {
+    return this.methodRequest("DELETE", path, opts);
   }
 
   private methodRequest<Rsp>(
     method: HTTPMethod,
     path: string,
-    opts?: PromiseOrValue<SdkRequestOptions>,
-  ): APIPromise<Rsp> {
+    opts?: PromiseOrValue<SdkRequestOptions>
+  ): APIPromise<Rsp> { 
     return this.request(
       Promise.resolve(opts).then((opts) => {
+        this.prepareOptions(opts ?? {} as SdkRequestOptions);
         // Create the final options object without spreading to avoid type conflicts
         const finalOptions: FinalRequestOptions = {
           method,
@@ -62,17 +99,17 @@ export class BaseSdkClient {
           headers: opts?.headers,
           body: opts?.body,
           timeout: opts?.timeout,
-          queryParams: opts?.queryParams
+          queryParams: opts?.queryParams,
         };
-        
+        this.prepareRequest(finalOptions);
         return finalOptions;
-      }),
+      })
     );
   }
 
   request<Rsp>(
     options: PromiseOrValue<FinalRequestOptions>,
-    remainingRetries: number | null = null,
+    remainingRetries: number | null = null
   ): APIPromise<Rsp> {
     return new APIPromise(this, this.makeRequest(options, remainingRetries));
   }
@@ -82,53 +119,55 @@ export class BaseSdkClient {
     remainingRetries: number | null
   ): Promise<SdkResponse<Rsp>> {
     const opts = await Promise.resolve(options);
-    
+
     // Call prepareOptions hook
     await this.prepareOptions(opts);
-    
+
     // Build URL
-    const url = this.buildUrl(opts.path); 
+    const url = this.buildUrl(opts.path);
     // Merge client options with request options
     const mergedOptions: SdkRequestOptions = {
-      method:opts.method,
+      method: opts.method,
       url: url,
       headers: {
         ...this.options.headers,
-        ...opts.headers
+        ...opts.headers,
       },
       timeout: opts.timeout || this.options.timeout,
       body: opts.body,
-      queryParams: opts.queryParams
+      queryParams: opts.queryParams,
     };
 
     // Add API key to headers if provided
     if (this.options.apiKey) {
       mergedOptions.headers = {
         ...mergedOptions.headers,
-        'Authorization': `Bearer ${this.options.apiKey}`
+        Authorization: `Bearer ${this.options.apiKey}`,
       };
     }
 
     return await HttpTool.request<Rsp>(mergedOptions);
   }
 
-  public async sendRequest<T>(requestOptions: SdkRequestOptions): Promise<SdkResponse<T>> {
+  public async sendRequest<T>(
+    requestOptions: SdkRequestOptions
+  ): Promise<SdkResponse<T>> {
     // Merge client options with request options
     const mergedOptions: SdkRequestOptions = {
       ...requestOptions,
       url: this.buildUrl(requestOptions.url),
       headers: {
         ...this.options.headers,
-        ...requestOptions.headers
+        ...requestOptions.headers,
       },
-      timeout: requestOptions.timeout || this.options.timeout
+      timeout: requestOptions.timeout || this.options.timeout,
     };
 
     // Add API key to headers if provided
     if (this.options.apiKey) {
       mergedOptions.headers = {
         ...mergedOptions.headers,
-        'Authorization': `Bearer ${this.options.apiKey}`
+        Authorization: `Bearer ${this.options.apiKey}`,
       };
     }
 
@@ -137,14 +176,14 @@ export class BaseSdkClient {
 
   private buildUrl(path: string): string {
     // If path is already an absolute URL, return as is
-    if (path.startsWith('http://') || path.startsWith('https://')) {
+    if (path.startsWith("http://") || path.startsWith("https://")) {
       return path;
     }
-    
+
     // Ensure baseUrl doesn't end with a slash and path doesn't start with one
-    const baseUrl = this.options.baseUrl.replace(/\/$/, '');
-    const normalizedPath = path.startsWith('/') ? path : '/' + path;
-    
+    const baseUrl = this.options.baseUrl.replace(/\/$/, "");
+    const normalizedPath = path.startsWith("/") ? path : "/" + path;
+
     return baseUrl + normalizedPath;
   }
   getBasePath(requestOptions?: SdkRequestOptions) {
