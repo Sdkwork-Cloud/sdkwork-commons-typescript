@@ -132,4 +132,44 @@ export interface ApiResult<T> {
      */
     encryptedText: string;
 }
+/**
+ * 分页排序信息
+ */
+export interface Sort {
+    empty: boolean;
+    sorted: boolean;
+    unsorted: boolean;
+    orders?: Order[];
+}
+export interface Order {
+    direction: 'ASC' | 'DESC';
+    property: string;
+    ignoreCase: boolean;
+    nullHandling: 'NATIVE' | 'NULLS_FIRST' | 'NULLS_LAST';
+}
+/**
+ * 分页元数据（不包含实际数据）
+ */
+export interface PageMetadata {
+    size: number;
+    totalElements: number;
+    totalPages: number;
+    number: number;
+}
+/**
+ * 完整分页响应
+ * @template T - 分页内容项类型
+ */
+export interface Page<T> {
+    content: T[];
+    empty: boolean;
+    first: boolean;
+    last: boolean;
+    number: number;
+    numberOfElements: number;
+    size: number;
+    sort: Sort;
+    totalElements: number;
+    totalPages: number;
+}
 export {};

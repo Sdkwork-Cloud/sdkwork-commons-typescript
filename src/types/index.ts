@@ -472,3 +472,46 @@ export interface ApiResult<T> {
    */
   encryptedText: string;
 }
+/**
+ * 分页排序信息
+ */
+export interface Sort {
+  empty: boolean;
+  sorted: boolean;
+  unsorted: boolean;
+  orders?: Order[];
+}
+
+export interface Order {
+  direction: 'ASC' | 'DESC';
+  property: string;
+  ignoreCase: boolean;
+  nullHandling: 'NATIVE' | 'NULLS_FIRST' | 'NULLS_LAST';
+}
+
+/**
+ * 分页元数据（不包含实际数据）
+ */
+export interface PageMetadata {
+  size: number;          // 每页元素数量
+  totalElements: number;  // 总元素数量
+  totalPages: number;     // 总页数
+  number: number;         // 当前页码（0起始）
+}
+
+/**
+ * 完整分页响应
+ * @template T - 分页内容项类型
+ */
+export interface Page<T> {
+  content: T[];           // 实际数据数组
+  empty: boolean;          // 当前页是否为空
+  first: boolean;          // 是否第一页
+  last: boolean;           // 是否最后一页
+  number: number;          // 当前页码（0起始）
+  numberOfElements: number; // 当前页元素数量
+  size: number;            // 每页元素数量
+  sort: Sort;              // 排序信息
+  totalElements: number;   // 总元素数量
+  totalPages: number;      // 总页数
+}
