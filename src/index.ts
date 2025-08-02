@@ -9,3 +9,6 @@ export * from './types';
 
 // Examples
 export * from './examples';
+
+// Shared
+export * from './shared';

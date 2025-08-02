@@ -15,3 +15,6 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 __exportStar(require("./BaseSdkApi"), exports);
+__exportStar(require("./BaseSdkService"), exports);
+__exportStar(require("./Repository"), exports);
+__exportStar(require("./BaseSdkRepository"), exports);
