@@ -25,7 +25,15 @@ class HttpTool {
             method: options.method,
             headers: options.headers,
             timeout: options.timeout,
-            data: options.body
+            data: options.body,
+            withCredentials: true,
+            transformRequest: [
+                (data, headers) => {
+                    headers['Access-Control-Request-Method'] = options.method;
+                    headers['Access-Control-Request-Headers'] = 'Content-Type,Authorization,Access-Token';
+                    return data;
+                }
+            ]
         };
         try {
             const response = await axios_1.default.request(config);
