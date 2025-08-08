@@ -127,6 +127,7 @@ export class BaseSdkClient {
     const url = this.buildUrl(opts.path);
     // Merge client options with request options
     const mergedOptions: SdkRequestOptions = {
+      ...opts,
       method: opts.method,
       url: url,
       headers: {
@@ -136,6 +137,8 @@ export class BaseSdkClient {
       timeout: opts.timeout || this.options.timeout,
       body: opts.body,
       queryParams: opts.queryParams,
+      responseHandler: opts.responseHandler,
+      exceptionHandler: opts.exceptionHandler,
     };
 
     // Add API key to headers if provided
