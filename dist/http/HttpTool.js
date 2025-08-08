@@ -11,12 +11,12 @@ class HttpTool {
         let url = options.url;
         if (options.queryParams) {
             const queryParams = new URLSearchParams();
-            Object.keys(options.queryParams).forEach(key => {
+            Object.keys(options.queryParams).forEach((key) => {
                 queryParams.append(key, String(options.queryParams[key]));
             });
             const queryString = queryParams.toString();
             if (queryString) {
-                url += (url.includes('?') ? '&' : '?') + queryString;
+                url += (url.includes("?") ? "&" : "?") + queryString;
             }
         }
         // Prepare axios request config
@@ -30,17 +30,44 @@ class HttpTool {
             transformRequest: [
                 (data, headers) => {
                     return data;
-                }
-            ]
+                },
+            ],
         };
         try {
+            let exceptionHandler = options.exceptionHandler;
+            let responseHandler = options.responseHandler;
             const response = await axios_1.default.request(config);
+            console.log("response from server=", response);
+            if (response.status === 401) {
+                if (exceptionHandler) {
+                    return exceptionHandler.onUnauthorized(response);
+                }
+            }
+            if (response.status === 403) {
+                if (exceptionHandler) {
+                    return exceptionHandler.onAccessDenied(response);
+                }
+            }
+            if (response.status >= 400) {
+                if (exceptionHandler) {
+                    return exceptionHandler.onException(response);
+                }
+            }
+            if (responseHandler) {
+                let result = responseHandler.handle(response);
+                if (result) {
+                    return result;
+                }
+                else {
+                    return Promise.reject();
+                }
+            }
             // Convert axios response to our SdkResponse format
             const sdkResponse = {
                 data: response.data,
                 status: response.status,
                 statusText: response.statusText,
-                headers: response.headers
+                headers: response.headers,
             };
             return sdkResponse;
         }
@@ -53,13 +80,13 @@ class HttpTool {
                         data: error.response.data,
                         status: error.response.status,
                         statusText: error.response.statusText,
-                        headers: error.response.headers
+                        headers: error.response.headers,
                     };
                     return sdkResponse;
                 }
                 else if (error.request) {
                     // Request was made but no response received
-                    throw new Error('No response received from server');
+                    throw new Error("No response received from server");
                 }
                 else {
                     // Something else happened

@@ -1,3 +1,4 @@
+import { AxiosResponse } from "axios";
 export type HTTPMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
 export type ServerSentEvent = {
     event: string | null;
@@ -9,13 +10,23 @@ export interface TokenManager {
     getRefreshToken(): string | null;
     getAccessToken(): string | null;
 }
+export interface ResponseHandler {
+    handle<T>(response: AxiosResponse): SdkResponse<T>;
+}
+export interface ExceptionResponseHandler {
+    onAccessDenied<T>(response: AxiosResponse): SdkResponse<T>;
+    onUnauthorized<T>(response: AxiosResponse): SdkResponse<T>;
+    onException<T>(response: AxiosResponse): SdkResponse<T>;
+}
 export interface SdkClientOptions {
     baseUrl: string;
     apiKey?: string;
     accessToken?: string;
-    tokenManager?: TokenManager;
     timeout?: number;
     headers?: Record<string, string>;
+    tokenManager?: TokenManager;
+    responseHandler?: ResponseHandler;
+    exceptionHandler?: ExceptionResponseHandler;
 }
 export interface SdkRequestOptions {
     url: string;
@@ -24,6 +35,8 @@ export interface SdkRequestOptions {
     body?: any;
     timeout?: number;
     queryParams?: Record<string, string | number | boolean>;
+    responseHandler?: ResponseHandler;
+    exceptionHandler?: ExceptionResponseHandler;
 }
 export interface SdkResponse<T> {
     data: T;

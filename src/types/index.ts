@@ -1,3 +1,4 @@
+import { AxiosResponse } from "axios";
 import { encodeUTF8 } from "../utils/bytes";
 import { findDoubleNewlineIndex, LineDecoder } from "../utils/decoders/line";
 
@@ -14,14 +15,24 @@ export interface TokenManager{
   getRefreshToken(): string | null;
   getAccessToken(): string | null;
 }
+export interface ResponseHandler{
+  handle<T>(response: AxiosResponse):SdkResponse<T>;
+}
+export interface ExceptionResponseHandler{
+  onAccessDenied<T>(response: AxiosResponse):SdkResponse<T>;
+  onUnauthorized<T>(response: AxiosResponse):SdkResponse<T>;
+  onException<T>(response: AxiosResponse):SdkResponse<T>;
+}
 export interface SdkClientOptions {
   baseUrl: string;
   apiKey?: string;
   accessToken?: string;
-  tokenManager?: TokenManager;
   timeout?: number;
   headers?: Record<string, string>;
-
+  
+  tokenManager?: TokenManager;
+  responseHandler?: ResponseHandler;
+  exceptionHandler?: ExceptionResponseHandler;
 }
 
 export interface SdkRequestOptions {
@@ -31,6 +42,8 @@ export interface SdkRequestOptions {
   body?: any;
   timeout?: number;
   queryParams?: Record<string, string | number | boolean>;
+  responseHandler?: ResponseHandler;
+  exceptionHandler?: ExceptionResponseHandler;
 }
 
 export interface SdkResponse<T> {
