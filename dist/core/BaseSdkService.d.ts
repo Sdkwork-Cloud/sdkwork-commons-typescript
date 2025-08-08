@@ -1,5 +1,5 @@
 import { BaseSdkClient } from '../http';
-export declare abstract class BaseSdkService {
-    protected _client: BaseSdkClient;
-    constructor(client: BaseSdkClient);
+export declare abstract class BaseSdkService<T extends BaseSdkClient> {
+    protected _client: T;
+    constructor(client: T);
 }
