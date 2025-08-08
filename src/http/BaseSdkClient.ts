@@ -46,7 +46,16 @@ export class BaseSdkClient {
    * This is useful for cases where you want to add certain headers based off of
    * the request properties, e.g. `method` or `url`.
    */
-  protected async prepareRequest(options: FinalRequestOptions): Promise<void> {}
+  protected async prepareRequest(
+    requestOptions: SdkRequestOptions
+  ): Promise<void> {
+    if (!requestOptions.exceptionHandler) {
+      requestOptions.exceptionHandler = this.options.exceptionHandler;
+    }
+    if (!requestOptions.responseHandler) {
+      requestOptions.responseHandler = this.options.responseHandler;
+    }
+  }
 
   get<Rsp>(
     path: string,
@@ -87,12 +96,13 @@ export class BaseSdkClient {
     method: HTTPMethod,
     path: string,
     opts?: PromiseOrValue<SdkRequestOptions>
-  ): APIPromise<Rsp> { 
+  ): APIPromise<Rsp> {
     return this.request(
       Promise.resolve(opts).then((opts) => {
-        this.prepareOptions(opts ?? {} as SdkRequestOptions);
+        this.prepareOptions(opts ?? ({} as SdkRequestOptions));
         // Create the final options object without spreading to avoid type conflicts
         const finalOptions: FinalRequestOptions = {
+          ...opts,
           method,
           path,
           url: path,
@@ -101,7 +111,6 @@ export class BaseSdkClient {
           timeout: opts?.timeout,
           queryParams: opts?.queryParams,
         };
-        this.prepareRequest(finalOptions);
         return finalOptions;
       })
     );
@@ -125,6 +134,7 @@ export class BaseSdkClient {
 
     // Build URL
     const url = this.buildUrl(opts.path);
+    this.prepareRequest(opts);
     // Merge client options with request options
     const mergedOptions: SdkRequestOptions = {
       ...opts,
@@ -149,6 +159,7 @@ export class BaseSdkClient {
       };
     }
 
+   
     return await HttpTool.request<Rsp>(mergedOptions);
   }
 
@@ -173,7 +184,7 @@ export class BaseSdkClient {
         Authorization: `Bearer ${this.options.apiKey}`,
       };
     }
-
+    this.prepareRequest(mergedOptions);
     return await HttpTool.request<T>(mergedOptions);
   }
 

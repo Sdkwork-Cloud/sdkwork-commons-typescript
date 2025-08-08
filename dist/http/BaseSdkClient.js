@@ -33,7 +33,14 @@ class BaseSdkClient {
      * This is useful for cases where you want to add certain headers based off of
      * the request properties, e.g. `method` or `url`.
      */
-    async prepareRequest(options) { }
+    async prepareRequest(requestOptions) {
+        if (!requestOptions.exceptionHandler) {
+            requestOptions.exceptionHandler = this.options.exceptionHandler;
+        }
+        if (!requestOptions.responseHandler) {
+            requestOptions.responseHandler = this.options.responseHandler;
+        }
+    }
     get(path, opts) {
         return this.methodRequest("GET", path, opts);
     }
@@ -54,6 +61,7 @@ class BaseSdkClient {
             this.prepareOptions(opts ?? {});
             // Create the final options object without spreading to avoid type conflicts
             const finalOptions = {
+                ...opts,
                 method,
                 path,
                 url: path,
@@ -62,7 +70,6 @@ class BaseSdkClient {
                 timeout: opts?.timeout,
                 queryParams: opts?.queryParams,
             };
-            this.prepareRequest(finalOptions);
             return finalOptions;
         }));
     }
@@ -75,6 +82,7 @@ class BaseSdkClient {
         await this.prepareOptions(opts);
         // Build URL
         const url = this.buildUrl(opts.path);
+        this.prepareRequest(opts);
         // Merge client options with request options
         const mergedOptions = {
             ...opts,
@@ -117,6 +125,7 @@ class BaseSdkClient {
                 Authorization: `Bearer ${this.options.apiKey}`,
             };
         }
+        this.prepareRequest(mergedOptions);
         return await HttpTool_1.HttpTool.request(mergedOptions);
     }
     buildUrl(path) {

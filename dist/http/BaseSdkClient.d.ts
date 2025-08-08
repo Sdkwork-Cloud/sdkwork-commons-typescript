@@ -15,7 +15,7 @@ export declare class BaseSdkClient {
      * This is useful for cases where you want to add certain headers based off of
      * the request properties, e.g. `method` or `url`.
      */
-    protected prepareRequest(options: FinalRequestOptions): Promise<void>;
+    protected prepareRequest(requestOptions: SdkRequestOptions): Promise<void>;
     get<Rsp>(path: string, opts?: PromiseOrValue<SdkRequestOptions>): APIPromise<Rsp>;
     post<Rsp>(path: string, opts?: PromiseOrValue<SdkRequestOptions>): APIPromise<Rsp>;
     patch<Rsp>(path: string, opts?: PromiseOrValue<SdkRequestOptions>): APIPromise<Rsp>;
