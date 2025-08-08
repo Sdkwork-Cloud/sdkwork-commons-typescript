@@ -18,3 +18,4 @@ __exportStar(require("./BaseSdkApi"), exports);
 __exportStar(require("./BaseSdkCURDService"), exports);
 __exportStar(require("./Repository"), exports);
 __exportStar(require("./BaseSdkRepository"), exports);
+__exportStar(require("./BaseSdkService"), exports);
