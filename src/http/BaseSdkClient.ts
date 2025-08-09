@@ -214,5 +214,6 @@ export class BaseSdkClient {
     if (!requestOptions.responseHandler) {
       requestOptions.responseHandler = this.options.responseHandler;
     }
+    return requestOptions;
   }
 }
