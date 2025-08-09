@@ -8,7 +8,7 @@ const axios_1 = __importDefault(require("axios"));
 class HttpTool {
     static async request(options) {
         // Build URL with query parameters
-        let url = options.url;
+        let url = options.url || '';
         if (options.queryParams) {
             const queryParams = new URLSearchParams();
             Object.keys(options.queryParams).forEach((key) => {

@@ -36,7 +36,7 @@ export interface SdkClientOptions {
 }
 
 export interface SdkRequestOptions {
-  url: string;
+  url?: string;
   method: HTTPMethod;
   headers?: Record<string, string>;
   body?: any;

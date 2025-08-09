@@ -29,7 +29,7 @@ export interface SdkClientOptions {
     exceptionHandler?: ExceptionResponseHandler;
 }
 export interface SdkRequestOptions {
-    url: string;
+    url?: string;
     method: HTTPMethod;
     headers?: Record<string, string>;
     body?: any;
