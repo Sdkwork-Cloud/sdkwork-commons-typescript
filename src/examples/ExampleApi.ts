@@ -1,5 +1,5 @@
 import { BaseSdkApi } from '../core/BaseSdkApi';
-import { SdkRequestOptions } from '../types';
+import { FinalRequestOptions, SdkRequestOptions } from '../types';
 import { SdkResponse } from '../types';
 import { HTTPMethod } from '../types';
 
@@ -18,13 +18,14 @@ export class ExampleApi extends BaseSdkApi {
       throw new Error('Client not initialized');
     }
 
-    const requestOptions: SdkRequestOptions = {
+    const requestOptions: FinalRequestOptions = {
       url: path,
       method: 'GET',
-      queryParams
+      queryParams,
+      path: ''
     };
 
-    return await this._client.sendRequest<T>(requestOptions);
+    return await this._client.request<T>(requestOptions);
   }
 
   /**
@@ -38,13 +39,14 @@ export class ExampleApi extends BaseSdkApi {
       throw new Error('Client not initialized');
     }
 
-    const requestOptions: SdkRequestOptions = {
+    const requestOptions: FinalRequestOptions = {
       url: path,
       method: 'POST',
-      body
+      body,
+      path: ''
     };
 
-    return await this._client.sendRequest<T>(requestOptions);
+    return await this._client.request<T>(requestOptions);
   }
 
   /**
@@ -58,13 +60,14 @@ export class ExampleApi extends BaseSdkApi {
       throw new Error('Client not initialized');
     }
 
-    const requestOptions: SdkRequestOptions = {
+    const requestOptions: FinalRequestOptions = {
       url: path,
       method: 'PUT',
-      body
+      body,
+      path: ''
     };
 
-    return await this._client.sendRequest<T>(requestOptions);
+    return await this._client.request<T>(requestOptions);
   }
 
   /**
@@ -77,11 +80,12 @@ export class ExampleApi extends BaseSdkApi {
       throw new Error('Client not initialized');
     }
 
-    const requestOptions: SdkRequestOptions = {
+    const requestOptions: FinalRequestOptions = {
       url: path,
-      method: 'DELETE'
+      method: 'DELETE',
+      path: ''
     };
 
-    return await this._client.sendRequest<T>(requestOptions);
+    return await this._client.request<T>(requestOptions);
   }
 }

@@ -56,6 +56,9 @@ class BaseSdkClient {
     delete(path, opts) {
         return this.methodRequest("DELETE", path, opts);
     }
+    request(options, remainingRetries = null) {
+        return new types_1.APIPromise(this, this.makeRequest(options, remainingRetries));
+    }
     methodRequest(method, path, opts) {
         return this.request(Promise.resolve(opts).then((opts) => {
             this.prepareOptions(opts ?? {});
@@ -73,15 +76,12 @@ class BaseSdkClient {
             return finalOptions;
         }));
     }
-    request(options, remainingRetries = null) {
-        return new types_1.APIPromise(this, this.makeRequest(options, remainingRetries));
-    }
     async makeRequest(options, remainingRetries) {
         const opts = await Promise.resolve(options);
         // Call prepareOptions hook
         await this.prepareOptions(opts);
         // Build URL
-        const url = this.buildUrl(opts.path);
+        const url = this.buildUrl(opts.path || opts.url || '');
         this.prepareRequest(opts);
         // Merge client options with request options
         const mergedOptions = {
@@ -105,27 +105,6 @@ class BaseSdkClient {
                 Authorization: `Bearer ${this.options.apiKey}`,
             };
         }
-        return await HttpTool_1.HttpTool.request(mergedOptions);
-    }
-    async sendRequest(requestOptions) {
-        // Merge client options with request options
-        const mergedOptions = {
-            ...requestOptions,
-            url: this.buildUrl(requestOptions.url || ""),
-            headers: {
-                ...this.options.headers,
-                ...requestOptions.headers,
-            },
-            timeout: requestOptions.timeout || this.options.timeout,
-        };
-        // Add API key to headers if provided
-        if (this.options.apiKey) {
-            mergedOptions.headers = {
-                ...mergedOptions.headers,
-                Authorization: `Bearer ${this.options.apiKey}`,
-            };
-        }
-        this.prepareRequest(mergedOptions);
         return await HttpTool_1.HttpTool.request(mergedOptions);
     }
     buildUrl(path) {

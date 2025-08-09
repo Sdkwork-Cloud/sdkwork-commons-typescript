@@ -1,6 +1,5 @@
 import { SdkClientOptions } from "../types";
 import { SdkRequestOptions } from "../types";
-import { SdkResponse } from "../types";
 import { FinalRequestOptions, PromiseOrValue, APIPromise } from "../types";
 export declare class BaseSdkClient {
     private options;
@@ -21,10 +20,9 @@ export declare class BaseSdkClient {
     patch<Rsp>(path: string, opts?: PromiseOrValue<SdkRequestOptions>): APIPromise<Rsp>;
     put<Rsp>(path: string, opts?: PromiseOrValue<SdkRequestOptions>): APIPromise<Rsp>;
     delete<Rsp>(path: string, opts?: PromiseOrValue<SdkRequestOptions>): APIPromise<Rsp>;
-    private methodRequest;
     request<Rsp>(options: PromiseOrValue<FinalRequestOptions>, remainingRetries?: number | null): APIPromise<Rsp>;
+    private methodRequest;
     private makeRequest;
-    sendRequest<T>(requestOptions: SdkRequestOptions): Promise<SdkResponse<T>>;
     private buildUrl;
     getBasePath(requestOptions?: SdkRequestOptions): string;
     protected buildRequestOptions(requestOptions?: SdkRequestOptions): SdkRequestOptions;

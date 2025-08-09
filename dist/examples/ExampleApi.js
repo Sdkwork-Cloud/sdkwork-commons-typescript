@@ -19,9 +19,10 @@ class ExampleApi extends BaseSdkApi_1.BaseSdkApi {
         const requestOptions = {
             url: path,
             method: 'GET',
-            queryParams
+            queryParams,
+            path: ''
         };
-        return await this._client.sendRequest(requestOptions);
+        return await this._client.request(requestOptions);
     }
     /**
      * Perform a POST request
@@ -36,9 +37,10 @@ class ExampleApi extends BaseSdkApi_1.BaseSdkApi {
         const requestOptions = {
             url: path,
             method: 'POST',
-            body
+            body,
+            path: ''
         };
-        return await this._client.sendRequest(requestOptions);
+        return await this._client.request(requestOptions);
     }
     /**
      * Perform a PUT request
@@ -53,9 +55,10 @@ class ExampleApi extends BaseSdkApi_1.BaseSdkApi {
         const requestOptions = {
             url: path,
             method: 'PUT',
-            body
+            body,
+            path: ''
         };
-        return await this._client.sendRequest(requestOptions);
+        return await this._client.request(requestOptions);
     }
     /**
      * Perform a DELETE request
@@ -68,9 +71,10 @@ class ExampleApi extends BaseSdkApi_1.BaseSdkApi {
         }
         const requestOptions = {
             url: path,
-            method: 'DELETE'
+            method: 'DELETE',
+            path: ''
         };
-        return await this._client.sendRequest(requestOptions);
+        return await this._client.request(requestOptions);
     }
 }
 exports.ExampleApi = ExampleApi;

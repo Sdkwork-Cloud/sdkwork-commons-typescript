@@ -92,6 +92,14 @@ export class BaseSdkClient {
     return this.methodRequest("DELETE", path, opts);
   }
 
+
+  request<Rsp>(
+    options: PromiseOrValue<FinalRequestOptions>,
+    remainingRetries: number | null = null
+  ): APIPromise<Rsp> {
+    return new APIPromise(this, this.makeRequest(options, remainingRetries));
+  }
+
   private methodRequest<Rsp>(
     method: HTTPMethod,
     path: string,
@@ -115,14 +123,6 @@ export class BaseSdkClient {
       })
     );
   }
-
-  request<Rsp>(
-    options: PromiseOrValue<FinalRequestOptions>,
-    remainingRetries: number | null = null
-  ): APIPromise<Rsp> {
-    return new APIPromise(this, this.makeRequest(options, remainingRetries));
-  }
-
   private async makeRequest<Rsp>(
     options: PromiseOrValue<FinalRequestOptions>,
     remainingRetries: number | null
@@ -133,7 +133,7 @@ export class BaseSdkClient {
     await this.prepareOptions(opts);
 
     // Build URL
-    const url = this.buildUrl(opts.path);
+    const url = this.buildUrl(opts.path||opts.url||'');
     this.prepareRequest(opts);
     // Merge client options with request options
     const mergedOptions: SdkRequestOptions = {
@@ -161,31 +161,7 @@ export class BaseSdkClient {
 
     return await HttpTool.request<Rsp>(mergedOptions);
   }
-
-  public async sendRequest<T>(
-    requestOptions: SdkRequestOptions
-  ): Promise<SdkResponse<T>> {
-    // Merge client options with request options
-    const mergedOptions: SdkRequestOptions = {
-      ...requestOptions,
-      url: this.buildUrl(requestOptions.url || ""),
-      headers: {
-        ...this.options.headers,
-        ...requestOptions.headers,
-      },
-      timeout: requestOptions.timeout || this.options.timeout,
-    };
-
-    // Add API key to headers if provided
-    if (this.options.apiKey) {
-      mergedOptions.headers = {
-        ...mergedOptions.headers,
-        Authorization: `Bearer ${this.options.apiKey}`,
-      };
-    }
-    this.prepareRequest(mergedOptions);
-    return await HttpTool.request<T>(mergedOptions);
-  }
+ 
 
   private buildUrl(path: string): string {
     // If path is already an absolute URL, return as is
