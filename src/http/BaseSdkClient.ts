@@ -178,7 +178,7 @@ export class BaseSdkClient {
   getBasePath(requestOptions?: SdkRequestOptions) {
     return this.options.baseUrl;
   }
-  protected buildRequestOptions(
+  buildRequestOptions(
     requestOptions?: SdkRequestOptions
   ): SdkRequestOptions {
     if (!requestOptions) {

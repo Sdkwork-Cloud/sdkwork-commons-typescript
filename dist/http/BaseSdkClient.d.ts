@@ -25,5 +25,5 @@ export declare class BaseSdkClient {
     private makeRequest;
     private buildUrl;
     getBasePath(requestOptions?: SdkRequestOptions): string;
-    protected buildRequestOptions(requestOptions?: SdkRequestOptions): SdkRequestOptions;
+    buildRequestOptions(requestOptions?: SdkRequestOptions): SdkRequestOptions;
 }
