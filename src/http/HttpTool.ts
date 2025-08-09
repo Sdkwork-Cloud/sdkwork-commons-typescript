@@ -76,6 +76,7 @@ export class HttpTool {
 
       return sdkResponse;
     } catch (error) {
+      console.error("response error from server=", error);
       // Handle axios errors
       if (axios.isAxiosError(error)) {
         if (error.response) {
