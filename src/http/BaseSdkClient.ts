@@ -168,7 +168,7 @@ export class BaseSdkClient {
     // Merge client options with request options
     const mergedOptions: SdkRequestOptions = {
       ...requestOptions,
-      url: this.buildUrl(requestOptions.url||''),
+      url: this.buildUrl(requestOptions.url || ""),
       headers: {
         ...this.options.headers,
         ...requestOptions.headers,
@@ -202,7 +202,9 @@ export class BaseSdkClient {
   getBasePath(requestOptions?: SdkRequestOptions) {
     return this.options.baseUrl;
   }
-  protected buildRequestOptions(requestOptions?: SdkRequestOptions) {
+  protected buildRequestOptions(
+    requestOptions?: SdkRequestOptions
+  ): SdkRequestOptions {
     if (!requestOptions) {
       requestOptions = {
         method: "GET",

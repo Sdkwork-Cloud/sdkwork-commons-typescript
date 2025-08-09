@@ -111,7 +111,7 @@ class BaseSdkClient {
         // Merge client options with request options
         const mergedOptions = {
             ...requestOptions,
-            url: this.buildUrl(requestOptions.url || ''),
+            url: this.buildUrl(requestOptions.url || ""),
             headers: {
                 ...this.options.headers,
                 ...requestOptions.headers,
