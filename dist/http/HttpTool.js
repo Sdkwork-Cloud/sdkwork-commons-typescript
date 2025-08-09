@@ -37,7 +37,7 @@ class HttpTool {
             let exceptionHandler = options.exceptionHandler;
             let responseHandler = options.responseHandler;
             const response = await axios_1.default.request(config);
-            console.log("response from server=", response);
+            console.error("response from server=", response);
             if (response.status === 401) {
                 if (exceptionHandler) {
                     return exceptionHandler.onUnauthorized(response);

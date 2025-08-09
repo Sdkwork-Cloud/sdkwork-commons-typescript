@@ -42,7 +42,7 @@ export class HttpTool {
       let responseHandler: ResponseHandler | undefined =
         options.responseHandler;
       const response: AxiosResponse<T> = await axios.request<T>(config);
-      console.log("response from server=", response);
+      console.error("response from server=", response);
       if (response.status === 401) {
         if (exceptionHandler) {
           return exceptionHandler.onUnauthorized(response);
