@@ -101,12 +101,12 @@ export class HttpTool {
         }
         if (error.response) {
           // Server responded with error status
-          const sdkResponse: SdkResponse<T> = {
-            data: error.response.data,
-            status: error.response.status,
-            statusText: error.response.statusText,
-            headers: error.response.headers as Record<string, string>,
-          };
+            const sdkResponse: SdkResponse<T> = {
+              data: error.response.data,
+              status: error.response.status,
+              statusText: error.response.statusText,
+              headers: error.response.headers as Record<string, string>,
+            };
           return sdkResponse;
         } else if (error.request) {
           // Request was made but no response received

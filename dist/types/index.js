@@ -1,7 +1,7 @@
 "use strict";
 var _a;
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.SdkStream = exports.APIPromise = void 0;
+exports.ApiResult = exports.SdkStream = exports.APIPromise = void 0;
 exports.ReadableStreamToAsyncIterable = ReadableStreamToAsyncIterable;
 exports._iterSSEMessages = _iterSSEMessages;
 const bytes_1 = require("../utils/bytes");
@@ -279,3 +279,47 @@ function partition(str, delimiter) {
     }
     return [str, '', ''];
 }
+/**
+ * ApiResult - 表示API响应结果的类
+ * @template T 数据类型
+ */
+class ApiResult {
+    constructor(init = {}) {
+        this.data = init.data ?? {};
+        this.code = init.code ?? "";
+        this.msg = init.msg ?? "";
+        this.requestId = init.requestId ?? "";
+        this.ip = init.ip ?? "";
+        this.hostname = init.hostname ?? "";
+        this.errorMsg = init.errorMsg ?? "";
+        this.errorName = init.errorName ?? "";
+        this.channelErrorCode = init.channelErrorCode ?? "";
+        this.channelErrorMsg = init.channelErrorMsg ?? "";
+        this.sign = init.sign ?? "";
+        this.signType = init.signType ?? "";
+        this.encryptType = init.encryptType ?? "";
+        this.encryptedText = init.encryptedText ?? "";
+    }
+    /**
+     * 判断API请求是否成功
+     * @returns 当状态码为"200"时返回true，否则返回false
+     */
+    isSuccess() {
+        return this.code === "200" || this.code === "2000";
+    }
+    /**
+     * 获取错误信息摘要
+     * @returns 错误信息摘要（包含errorName、errorMsg和channelErrorMsg）
+     */
+    getErrorSummary() {
+        const parts = [];
+        if (this.errorName)
+            parts.push(`[${this.errorName}]`);
+        if (this.errorMsg)
+            parts.push(this.errorMsg);
+        if (this.channelErrorMsg)
+            parts.push(`(渠道错误: ${this.channelErrorMsg})`);
+        return parts.length > 0 ? parts.join(" ") : "Unknown error";
+    }
+}
+exports.ApiResult = ApiResult;

@@ -77,80 +77,35 @@ export declare class SdkStream<Item> implements AsyncIterable<Item> {
     static fromReadableStream<Item>(readableStream: ReadableStream, controller: AbortController, client?: BaseSdkClientType): SdkStream<Item>;
 }
 /**
- * 自动生成的TypeScript接口定义
- * 对应Java类: ApiResult
+ * ApiResult - 表示API响应结果的类
+ * @template T 数据类型
  */
-export interface ApiResult<T> {
-    /**
-     * data字段
-     * Java类型: java.lang.Object
-     */
+export declare class ApiResult<T> {
     data: T;
-    /**
-     * code字段
-     * Java类型: java.lang.String
-     */
     code: string;
-    /**
-     * msg字段
-     * Java类型: java.lang.String
-     */
     msg: string;
-    /**
-     * requestId字段
-     * Java类型: java.lang.String
-     */
-    requestId: string;
-    /**
-     * ip字段
-     * Java类型: java.lang.String
-     */
-    ip: string;
-    /**
-     * hostname字段
-     * Java类型: java.lang.String
-     */
-    hostname: string;
-    /**
-     * errorMsg字段
-     * Java类型: java.lang.String
-     */
     errorMsg: string;
-    /**
-     * errorName字段
-     * Java类型: java.lang.String
-     */
     errorName: string;
+    requestId: string;
+    ip?: string;
+    hostname?: string;
+    channelErrorCode?: string;
+    channelErrorMsg?: string;
+    sign?: string;
+    signType?: string;
+    encryptType?: string;
+    encryptedText?: string;
+    constructor(init?: Partial<ApiResult<T>>);
     /**
-     * channelErrorCode字段
-     * Java类型: java.lang.String
+     * 判断API请求是否成功
+     * @returns 当状态码为"200"时返回true，否则返回false
      */
-    channelErrorCode: string;
+    isSuccess(): boolean;
     /**
-     * channelErrorMsg字段
-     * Java类型: java.lang.String
+     * 获取错误信息摘要
+     * @returns 错误信息摘要（包含errorName、errorMsg和channelErrorMsg）
      */
-    channelErrorMsg: string;
-    /**
-     * sign字段
-     * Java类型: java.lang.String
-     */
-    sign: string;
-    /**
-     * signType字段
-     * Java类型: java.lang.String
-     */
-    signType: string;
-    /**
-     * encryptType字段
-     * Java类型: java.lang.String
-     */
-    encryptType: string;
-    /**
-     * encryptedText字段
-     * Java类型: java.lang.String
-     */
-    encryptedText: string;
+    getErrorSummary(): string;
 }
 /**
  * 分页排序信息
