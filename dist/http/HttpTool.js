@@ -75,6 +75,24 @@ class HttpTool {
             console.error("response error from server=", error);
             // Handle axios errors
             if (axios_1.default.isAxiosError(error)) {
+                let errResponse = error.response;
+                let exceptionHandler = options.exceptionHandler;
+                let responseHandler = options.responseHandler;
+                if (errResponse && errResponse.status === 401) {
+                    if (exceptionHandler) {
+                        return exceptionHandler.onUnauthorized(errResponse);
+                    }
+                }
+                if (errResponse && errResponse.status === 403) {
+                    if (exceptionHandler) {
+                        return exceptionHandler.onAccessDenied(errResponse);
+                    }
+                }
+                if (errResponse && errResponse.status >= 400) {
+                    if (exceptionHandler) {
+                        return exceptionHandler.onException(errResponse);
+                    }
+                }
                 if (error.response) {
                     // Server responded with error status
                     const sdkResponse = {
