@@ -8,5 +8,16 @@ class BaseSdkApi {
     getBasePath(options) {
         return this._client.getBasePath(options);
     }
+    getQueryParams(queryParams, options) {
+        let optionsQueryParam = {};
+        if (options && options.queryParams) {
+            optionsQueryParam = options.queryParams;
+        }
+        const result = {
+            ...optionsQueryParam,
+            ...(queryParams || {}),
+        };
+        return result;
+    }
 }
 exports.BaseSdkApi = BaseSdkApi;

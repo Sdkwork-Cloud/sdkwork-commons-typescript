@@ -1,5 +1,5 @@
-import { BaseSdkClient } from '../http';
-import { SdkRequestOptions } from '../types';
+import { BaseSdkClient } from "../http";
+import { Pageable, SdkRequestOptions } from "../types";
 
 export abstract class BaseSdkApi {
   protected _client: BaseSdkClient;
@@ -9,5 +9,19 @@ export abstract class BaseSdkApi {
   }
   protected getBasePath(options?: SdkRequestOptions) {
     return this._client.getBasePath(options);
+  }
+  protected getQueryParams(
+    queryParams: any & Pageable,
+    options?: SdkRequestOptions
+  ) {
+    let optionsQueryParam = {};
+    if (options && options.queryParams) {
+      optionsQueryParam = options.queryParams;
+    }
+    const result = {
+      ...optionsQueryParam,
+      ...(queryParams || {}),
+    };
+    return result;
   }
 }
