@@ -92,6 +92,7 @@ class HttpTool {
                 statusText: response.statusText,
                 headers: response.headers,
             };
+            console.error('sdk response==============', sdkResponse);
             return sdkResponse;
         }
         catch (error) {
