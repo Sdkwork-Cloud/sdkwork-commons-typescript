@@ -19,5 +19,19 @@ class BaseSdkApi {
         };
         return result;
     }
+    initRequestOptions(queryParams, method, options) {
+        if (typeof method === "string") {
+            method = method;
+        }
+        if (!options) {
+            options = {
+                method: method,
+            };
+        }
+        if (queryParams) {
+            options.queryParams = this.getQueryParams(queryParams, options);
+        }
+        return options;
+    }
 }
 exports.BaseSdkApi = BaseSdkApi;

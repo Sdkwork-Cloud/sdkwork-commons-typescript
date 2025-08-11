@@ -5,4 +5,5 @@ export declare abstract class BaseSdkApi {
     constructor(client: BaseSdkClient);
     protected getBasePath(options?: SdkRequestOptions): string;
     protected getQueryParams(queryParams: any & Pageable, options?: SdkRequestOptions): any;
+    protected initRequestOptions(queryParams: any & Pageable, method: any, options?: SdkRequestOptions): SdkRequestOptions;
 }
