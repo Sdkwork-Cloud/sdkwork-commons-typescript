@@ -29,6 +29,11 @@ class HttpTool {
             withCredentials: true,
             transformRequest: [
                 (data, headers) => {
+                    // 如果数据是对象类型或数组类型，将其转换为JSON字符串
+                    if (data && (typeof data === 'object' || Array.isArray(data))) {
+                        headers && (headers['Content-Type'] = 'application/json');
+                        return JSON.stringify(data);
+                    }
                     return data;
                 },
             ],
