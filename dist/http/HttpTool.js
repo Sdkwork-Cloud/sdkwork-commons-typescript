@@ -69,8 +69,25 @@ class HttpTool {
                 }
             }
             // Convert axios response to our SdkResponse format
+            // 确保返回的数据类型正确转换为T类型，包括数组类型
+            let responseData;
+            try {
+                // 检查响应数据是否为对象或数组
+                if (typeof response.data === 'object' || Array.isArray(response.data)) {
+                    // 对象或数组类型直接转换
+                    responseData = response.data;
+                }
+                else {
+                    // 非对象类型通过JSON序列化和反序列化进行转换
+                    responseData = JSON.parse(JSON.stringify(response.data));
+                }
+            }
+            catch (e) {
+                // 如果转换失败，则使用原始数据
+                responseData = response.data;
+            }
             const sdkResponse = {
-                data: response.data,
+                data: responseData,
                 status: response.status,
                 statusText: response.statusText,
                 headers: response.headers,
@@ -101,8 +118,25 @@ class HttpTool {
                 }
                 if (error.response) {
                     // Server responded with error status
+                    // 确保错误响应的数据类型正确转换为T类型，包括数组类型
+                    let errorResponseData;
+                    try {
+                        // 检查错误响应数据是否为对象或数组
+                        if (typeof error.response.data === 'object' || Array.isArray(error.response.data)) {
+                            // 对象或数组类型直接转换
+                            errorResponseData = error.response.data;
+                        }
+                        else {
+                            // 非对象类型通过JSON序列化和反序列化进行转换
+                            errorResponseData = JSON.parse(JSON.stringify(error.response.data));
+                        }
+                    }
+                    catch (e) {
+                        // 如果转换失败，则使用原始数据
+                        errorResponseData = error.response.data;
+                    }
                     const sdkResponse = {
-                        data: error.response.data,
+                        data: errorResponseData,
                         status: error.response.status,
                         statusText: error.response.statusText,
                         headers: error.response.headers,
