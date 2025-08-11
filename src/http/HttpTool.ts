@@ -41,6 +41,7 @@ export class HttpTool {
         options.exceptionHandler;
       let responseHandler: ResponseHandler | undefined =
         options.responseHandler;
+      console.info('request config=====================', config);
       const response: AxiosResponse<T> = await axios.request<T>(config);
       console.error("response from server=", response);
       if (response.status === 401) {
