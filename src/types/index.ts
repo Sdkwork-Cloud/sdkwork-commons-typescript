@@ -418,6 +418,39 @@ function partition(str: string, delimiter: string): [string, string, string] {
   return [str, '', ''];
 }
 /**
+ * 分页请求参数接口
+ */
+export interface Pageable {
+  /**
+   * 页码（从0开始）
+   * @default 0
+   */
+  page?: number;
+  
+  /**
+   * 每页记录数
+   * @default 10
+   */
+  size?: number;
+  
+  /**
+   * 排序参数
+   * 格式：字段名,排序方向（asc/desc）
+   * 示例：["createdAt,desc", "name,asc"]
+   */
+  sort?: string[];
+  
+  /**
+   * 搜索关键字（可选）
+   */
+  keyword?: string;
+  
+  /**
+   * 自定义过滤参数（键值对）
+   */
+  filters?: Record<string, any>;
+}
+/**
  * ApiResult - 表示API响应结果的类
  * @template T 数据类型
  */
