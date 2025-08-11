@@ -34,7 +34,7 @@ export interface SdkRequestOptions {
     headers?: Record<string, string>;
     body?: any;
     timeout?: number;
-    queryParams?: Record<string, string | number | boolean>;
+    queryParams?: Record<string, string | number | boolean> | any;
     responseHandler?: ResponseHandler;
     exceptionHandler?: ExceptionResponseHandler;
 }
