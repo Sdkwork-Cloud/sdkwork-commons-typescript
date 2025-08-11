@@ -9,6 +9,7 @@ class HttpTool {
     static async request(options) {
         // Build URL with query parameters
         let url = options.url || '';
+        console.info('the request options', options);
         if (options.queryParams) {
             const queryParams = new URLSearchParams();
             Object.keys(options.queryParams).forEach((key) => {

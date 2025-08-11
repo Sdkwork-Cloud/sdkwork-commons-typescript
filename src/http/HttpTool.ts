@@ -10,6 +10,7 @@ export class HttpTool {
   static async request<T>(options: SdkRequestOptions): Promise<SdkResponse<T>> {
     // Build URL with query parameters
     let url = options.url||'';
+    console.info('the request options', options)
     if (options.queryParams) {
       const queryParams = new URLSearchParams();
       Object.keys(options.queryParams).forEach((key) => {
