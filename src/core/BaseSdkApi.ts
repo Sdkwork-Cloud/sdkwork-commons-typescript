@@ -32,7 +32,7 @@ export abstract class BaseSdkApi {
     options?: SdkRequestOptions
   ): SdkRequestOptions {
     if (typeof method === "string") {
-      method = method as HTTPMethod
+      method = method as HTTPMethod;
     }
     if (!options) {
       options = {
