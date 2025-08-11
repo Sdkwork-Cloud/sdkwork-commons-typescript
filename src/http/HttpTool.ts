@@ -108,7 +108,7 @@ export class HttpTool {
         if (error.response) {
           // Server responded with error status
             const sdkResponse: SdkResponse<T> = {
-              data: error.response.data,
+              data: error.response.data as T,
               status: error.response.status,
               statusText: error.response.statusText,
               headers: error.response.headers as Record<string, string>,
