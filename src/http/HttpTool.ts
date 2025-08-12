@@ -3,11 +3,18 @@ import {
   ExceptionResponseHandler,
   ResponseHandler,
   SdkRequestOptions,
+  SdkStream,
 } from "../types";
 import { SdkResponse } from "../types";
 
 export class HttpTool {
-  static async request<T>(options: SdkRequestOptions): Promise<SdkResponse<T>> {
+  static async request<T>(options: SdkRequestOptions, client:any): Promise<SdkResponse<T>|SdkStream<T>> {
+     if(options.stream){
+      return HttpTool.streamRequest(options, client);
+     }
+     return HttpTool.noneStreamRequest(options, client);
+  }
+  static async noneStreamRequest<T>(options: SdkRequestOptions, client:any): Promise<SdkResponse<T>> {
     // Build URL with query parameters
     let url = options.url||'';
     console.info('the request options', options)
@@ -159,6 +166,88 @@ export class HttpTool {
         // Non-axios error
         throw error;
       }
+    }
+  }
+  /**
+   * 使用fetch实现SSE或stream请求
+   */
+  static async streamRequest<T>(options: SdkRequestOptions, client:any): Promise<SdkResponse<T>|SdkStream<T>> { 
+    // 构建URL和查询参数
+    let url = options.url || '';
+    if (options.queryParams) {
+      const queryParams = new URLSearchParams();
+      Object.keys(options.queryParams).forEach((key) => {
+        queryParams.append(key, String(options.queryParams![key]));
+      });
+      const queryString = queryParams.toString();
+      if (queryString) {
+        url += (url.includes("?") ? "&" : "?") + queryString;
+      }
+    }
+
+    // 准备fetch请求配置
+    const controller = new AbortController();
+    const fetchOptions: RequestInit = {
+      method: options.method,
+      headers: options.headers as any,
+      signal: controller.signal,
+      credentials: 'include', // 相当于withCredentials: true
+    };
+
+    // 处理请求体
+    if (options.body) {
+      if (typeof options.body === 'object' || Array.isArray(options.body)) {
+        fetchOptions.headers = {
+          ...fetchOptions.headers,
+          'Content-Type': 'application/json'
+        };
+        fetchOptions.body = JSON.stringify(options.body);
+      } else {
+        fetchOptions.body = options.body as any;
+      }
+    }
+
+    try {
+      console.info('stream request config=====================', { url, fetchOptions });
+      const response = await fetch(url, fetchOptions);
+      
+      // 处理错误状态码
+      if (!response.ok) {
+        const exceptionHandler = options.exceptionHandler;
+        
+        if (response.status === 401 && exceptionHandler) {
+          return exceptionHandler.onUnauthorized(response as any);
+        }
+        
+        if (response.status === 403 && exceptionHandler) {
+          return exceptionHandler.onAccessDenied(response as any);
+        }
+        
+        if (response.status >= 400 && exceptionHandler) {
+          return exceptionHandler.onException(response as any);
+        }
+        
+        // 如果没有异常处理器，则抛出错误
+        const errorText = await response.text();
+        throw new Error(`HTTP error ${response.status}: ${errorText}`);
+      }
+
+      // 检查响应是否为SSE格式
+      const contentType = response.headers.get('content-type');
+      if (contentType && contentType.includes('text/event-stream')) {
+        return SdkStream.fromSSEResponse<T>(response, controller, client);
+      } else {
+        // 处理为常规JSON流
+        return SdkStream.fromReadableStream<T>(
+          response.body as ReadableStream,
+          controller,
+          client
+        );
+      }
+    } catch (error) {
+      controller.abort();
+      console.error("stream request error:", error);
+      throw error;
     }
   }
 }

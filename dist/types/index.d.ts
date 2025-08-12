@@ -1,10 +1,6 @@
 import { AxiosResponse } from "axios";
+export * from "./stream";
 export type HTTPMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
-export type ServerSentEvent = {
-    event: string | null;
-    data: string;
-    raw: string[];
-};
 export interface TokenManager {
     getAuthToken(): string | null;
     getRefreshToken(): string | null;
@@ -33,10 +29,28 @@ export interface SdkRequestOptions {
     method: HTTPMethod;
     headers?: Record<string, string>;
     body?: any;
-    timeout?: number;
     queryParams?: Record<string, string | number | boolean> | any;
     responseHandler?: ResponseHandler;
     exceptionHandler?: ExceptionResponseHandler;
+    /**
+     * The maximum number of times that the client will retry a request in case of a
+     * temporary failure, like a network error or a 5XX error from the server.
+     *
+     * @default 2
+     */
+    maxRetries?: number;
+    stream?: boolean | undefined;
+    /**
+     * The maximum amount of time (in milliseconds) that the client should wait for a response
+     * from the server before timing out a single request.
+     *
+     * @unit milliseconds
+     */
+    timeout?: number;
+    /**
+     * An AbortSignal that can be used to cancel the request.
+     */
+    signal?: AbortSignal | undefined | null;
 }
 export interface SdkResponse<T> {
     data: T;
@@ -54,27 +68,12 @@ declare type BaseSdkClientType = any;
 export declare class APIPromise<T> implements Promise<SdkResponse<T>> {
     private client;
     private promise;
-    constructor(client: BaseSdkClientType, promise: Promise<SdkResponse<T>>);
-    then<TResult1 = SdkResponse<T>, TResult2 = never>(onfulfilled?: ((value: SdkResponse<T>) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): Promise<TResult1 | TResult2>;
-    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): Promise<SdkResponse<T> | TResult>;
-    finally(onfinally?: (() => void) | undefined | null): Promise<SdkResponse<T>>;
+    constructor(client: BaseSdkClientType, promise: Promise<SdkResponse<T> | any>);
+    then<TResult1 = SdkResponse<T> | any, TResult2 = never>(onfulfilled?: ((value: SdkResponse<T> | any) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): Promise<TResult1 | TResult2>;
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): Promise<SdkResponse<T> | TResult | any>;
+    finally(onfinally?: (() => void) | undefined | null): Promise<SdkResponse<T> | any>;
     [Symbol.toStringTag]: string;
-    asResponse(): Promise<SdkResponse<T>>;
-}
-export declare function ReadableStreamToAsyncIterable<T>(stream: any): AsyncIterableIterator<T>;
-export declare function _iterSSEMessages(response: Response, controller: AbortController): AsyncGenerator<ServerSentEvent, void, unknown>;
-export declare class SdkStream<Item> implements AsyncIterable<Item> {
-    private iterator;
-    controller: AbortController;
-    _client: BaseSdkClientType | undefined;
-    constructor(iterator: () => AsyncIterator<Item>, controller: AbortController, client?: BaseSdkClientType);
-    [Symbol.asyncIterator](): AsyncIterator<Item, any, undefined>;
-    static fromSSEResponse<Item>(response: Response, controller: AbortController, client?: BaseSdkClientType): SdkStream<Item>;
-    /**
-     * Generates a Stream from a newline-separated ReadableStream
-     * where each item is a JSON value.
-     */
-    static fromReadableStream<Item>(readableStream: ReadableStream, controller: AbortController, client?: BaseSdkClientType): SdkStream<Item>;
+    asResponse(): Promise<SdkResponse<T> | any>;
 }
 /**
  * 分页请求参数接口
@@ -146,10 +145,10 @@ export interface Sort {
     orders?: Order[];
 }
 export interface Order {
-    direction: 'ASC' | 'DESC';
+    direction: "ASC" | "DESC";
     property: string;
     ignoreCase: boolean;
-    nullHandling: 'NATIVE' | 'NULLS_FIRST' | 'NULLS_LAST';
+    nullHandling: "NATIVE" | "NULLS_FIRST" | "NULLS_LAST";
 }
 /**
  * 分页元数据（不包含实际数据）
@@ -176,4 +175,3 @@ export interface Page<T> {
     totalElements: number;
     totalPages: number;
 }
-export {};

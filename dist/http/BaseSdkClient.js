@@ -105,7 +105,7 @@ class BaseSdkClient {
                 Authorization: `Bearer ${this.options.apiKey}`,
             };
         }
-        return await HttpTool_1.HttpTool.request(mergedOptions);
+        return await HttpTool_1.HttpTool.request(mergedOptions, this);
     }
     buildUrl(path) {
         // If path is already an absolute URL, return as is

@@ -1,4 +1,4 @@
-import { SdkClientOptions } from "../types";
+import { SdkClientOptions, SdkStream } from "../types";
 import { SdkRequestOptions } from "../types";
 import { SdkResponse } from "../types";
 import { HttpTool } from "./HttpTool";
@@ -126,7 +126,7 @@ export class BaseSdkClient {
   private async makeRequest<Rsp>(
     options: PromiseOrValue<FinalRequestOptions>,
     remainingRetries: number | null
-  ): Promise<SdkResponse<Rsp>> {
+  ): Promise<SdkResponse<Rsp>|any> {
     const opts = await Promise.resolve(options);
 
     // Call prepareOptions hook
@@ -159,7 +159,7 @@ export class BaseSdkClient {
       };
     }
 
-    return await HttpTool.request<Rsp>(mergedOptions);
+    return await HttpTool.request<Rsp>(mergedOptions, this);
   }
  
 
