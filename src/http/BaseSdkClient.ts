@@ -92,7 +92,6 @@ export class BaseSdkClient {
     return this.methodRequest("DELETE", path, opts);
   }
 
-
   request<Rsp>(
     options: PromiseOrValue<FinalRequestOptions>,
     remainingRetries: number | null = null
@@ -118,7 +117,7 @@ export class BaseSdkClient {
           body: opts?.body,
           timeout: opts?.timeout,
           queryParams: opts?.queryParams,
-          stream: opts?.stream
+          stream: opts?.stream,
         };
         return finalOptions;
       })
@@ -127,14 +126,14 @@ export class BaseSdkClient {
   private async makeRequest<Rsp>(
     options: PromiseOrValue<FinalRequestOptions>,
     remainingRetries: number | null
-  ): Promise<SdkResponse<Rsp>|any> {
+  ): Promise<SdkResponse<Rsp> | any> {
     const opts = await Promise.resolve(options);
 
     // Call prepareOptions hook
     await this.prepareOptions(opts);
 
     // Build URL
-    const url = this.buildUrl(opts.path||opts.url||'');
+    const url = this.buildUrl(opts.path || opts.url || "");
     this.prepareRequest(opts);
     // Merge client options with request options
     const mergedOptions: SdkRequestOptions = {
@@ -159,10 +158,9 @@ export class BaseSdkClient {
         Authorization: `Bearer ${this.options.apiKey}`,
       };
     }
-
+    console.error("make request options", mergedOptions);
     return await HttpTool.request<Rsp>(mergedOptions, this);
   }
- 
 
   private buildUrl(path: string): string {
     // If path is already an absolute URL, return as is
@@ -179,9 +177,7 @@ export class BaseSdkClient {
   getBasePath(requestOptions?: SdkRequestOptions) {
     return this.options.baseUrl;
   }
-  buildRequestOptions(
-    requestOptions?: SdkRequestOptions
-  ): SdkRequestOptions {
+  buildRequestOptions(requestOptions?: SdkRequestOptions): SdkRequestOptions {
     if (!requestOptions) {
       requestOptions = {
         method: "GET",

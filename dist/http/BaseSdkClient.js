@@ -72,7 +72,7 @@ class BaseSdkClient {
                 body: opts?.body,
                 timeout: opts?.timeout,
                 queryParams: opts?.queryParams,
-                stream: opts?.stream
+                stream: opts?.stream,
             };
             return finalOptions;
         }));
@@ -82,7 +82,7 @@ class BaseSdkClient {
         // Call prepareOptions hook
         await this.prepareOptions(opts);
         // Build URL
-        const url = this.buildUrl(opts.path || opts.url || '');
+        const url = this.buildUrl(opts.path || opts.url || "");
         this.prepareRequest(opts);
         // Merge client options with request options
         const mergedOptions = {
@@ -106,6 +106,7 @@ class BaseSdkClient {
                 Authorization: `Bearer ${this.options.apiKey}`,
             };
         }
+        console.error("make request options", mergedOptions);
         return await HttpTool_1.HttpTool.request(mergedOptions, this);
     }
     buildUrl(path) {
