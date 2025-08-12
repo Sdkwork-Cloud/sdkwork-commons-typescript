@@ -49,7 +49,7 @@ class HttpTool {
         try {
             let exceptionHandler = options.exceptionHandler;
             let responseHandler = options.responseHandler;
-            console.info('request config=====================', config);
+            console.info('none stream request config=====================', config);
             const response = await axios_1.default.request(config);
             console.error("response from server=", response);
             if (response.status === 401) {

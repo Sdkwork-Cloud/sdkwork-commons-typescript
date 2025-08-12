@@ -72,6 +72,7 @@ class BaseSdkClient {
                 body: opts?.body,
                 timeout: opts?.timeout,
                 queryParams: opts?.queryParams,
+                stream: opts?.stream
             };
             return finalOptions;
         }));
