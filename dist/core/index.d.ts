@@ -1,5 +1,5 @@
 export * from './BaseSdkApi';
-export * from './BaseSdkCURDService';
+export * from './BaseSdkCURDManager';
 export * from './Repository';
 export * from './BaseSdkRepository';
-export * from './BaseSdkService';
+export * from './BaseSdkManager';

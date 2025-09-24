@@ -1,10 +1,10 @@
 import { BaseSdkClient } from '../http';
 import { Logger } from '../shared';
 import { EntityId, IExtendedRepository, IQueryOptions, IPaginatedResult } from './Repository';
-import { IExtendedCURDService } from './Service';
+import { IExtendedCURDManager } from './Manager';
 
-export abstract class BaseSdkCURDService<T = any, ID extends EntityId = string>
-  implements IExtendedCURDService<T, ID>
+export abstract class BaseSdkCURDManager<T = any, ID extends EntityId = string>
+  implements IExtendedCURDManager<T, ID>
 {
   protected _client: BaseSdkClient; 
   protected logger: typeof Logger;
@@ -14,7 +14,7 @@ export abstract class BaseSdkCURDService<T = any, ID extends EntityId = string>
     this.logger = Logger;
   } 
 
-  handleServiceError(error: any, context: string): never {
+  handleManagerError(error: any, context: string): never {
     this.logger.error(`Error in ${context}:`, error);
     throw error;
   } 
